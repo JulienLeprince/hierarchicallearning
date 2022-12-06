@@ -215,29 +215,30 @@ def consecutive_missingval_thershold(df_nanfilter,
 ########################################################################################################################
 def extract_largest_pacf(pac_in: list,
                          ci: list,
-                         n: int = 3,
-                         threshold: float = 0):
+                         n: int,
+                         thresholdval: float):
     """Extracts the n-largest partial auto-correlation (pac) values
     from a given (pac_in) list and confidence interval (ci).
     A threshold can be set under which pac values will not be retained."""
     pac_in_ci = []
     for i, pac in enumerate(pac_in):
-        if (pac < ci[i][0]/2 or pac > ci[i][1]/2) and np.abs(pac) >= threshold:
+        if (pac < ci[i][0]/2 or pac > ci[i][1]/2) and np.abs(pac) >= thresholdval:
             pac_in_ci.append(pac)  # keep on the pac values outside the confidence interval
     pac_largest = heapq.nlargest(n, pac_in_ci[1::])  # do not keep the 1st value of the pac (autocorrelation)
     pac_largest_indices = [i for i in range(len(pac_in)) if pac_in[i] in pac_largest]
     if len(pac_largest) == 0:
         new_threshold = max(np.abs(pac_in[1::]))
-        print("No partial auto-correlation was found respecting the defined threshold. Threshold is re-adapted to "
-              "highest PAC value: ", new_threshold)
-        pac_largest, pac_largest_indices = extract_largest_pacf(pac_in, ci, n, threshold=new_threshold)
+        print("No partial auto-correlation was found respecting the defined threshold. Threshold is re-adapted to highest PAC value: ", new_threshold)
+        pac_largest, pac_largest_indices = extract_largest_pacf(pac_in, ci, n, new_threshold)
     return pac_largest, pac_largest_indices
 
 
-def get_pac_largest_timedeltas(df_in, n, threshold):
+def get_pac_largest_timedeltas(df_in, 
+                               n: int = 3, 
+                               threshold: float = 0.25):
     pacf, ci = sm.tsa.pacf(df_in, alpha=0.05)
     # We extract the values and indices of the 3 largest partial auto-correlations
-    pac_largest, pac_largest_indices = extract_largest_pacf(pacf, ci, n=n, threshold=threshold)
+    pac_largest, pac_largest_indices = extract_largest_pacf(pacf, ci, n, threshold)
     # And obtain the time interval in pandas.Timedelta.isoformat()
     pac_largest_timedeltas = [df_in.index[i] - df_in.index[0]
                               for i in pac_largest_indices]
