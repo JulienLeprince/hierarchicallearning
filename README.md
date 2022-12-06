@@ -1,4 +1,4 @@
-![hierarchicallearning](fig/GITHUB_header_HierarchicalLearning.pdf)
+![hierarchicallearning](fig/GITHUB_header_HierarchicalLearning.jpg)
 
 # Hierarchical Learning
 
