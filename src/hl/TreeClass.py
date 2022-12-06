@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import hierarchicalearning.HPL_utils as utils
+import hierarchicalearning.utils as utils
 
 ########################################################################################################################
 ###  Node & Tree Class

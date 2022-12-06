@@ -13,8 +13,8 @@ import glob
 import sys
 sys.path.append(github_local_folder_path+'src')
 # Utility functions
-import hpl.HPL_utils as utils
-import hpl.TreeClass as treepkg
+import hl.utils as utils
+import hl.TreeClass as treepkg
 
 
 ########################################################################################################################

@@ -7,8 +7,8 @@ import os as os
 import sys
 sys.path.append(github_local_folder_path+'src')
 # Utility functions
-import hpl.HPL_utils as utils
-import hpl.HierarchicalRegressor as regpkg
+import hl.utils as utils
+import hl.HierarchicalRegressor as regpkg
 
 ########################################################################################################################
 print("Reading results \n")

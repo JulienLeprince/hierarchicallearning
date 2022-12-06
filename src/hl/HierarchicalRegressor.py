@@ -21,7 +21,7 @@ import pickle
 from keras.models import clone_model
 from os.path import exists
 
-import hierarchicalearning.HPL_utils as utils
+import hierarchicalearning.utils as utils
 import hierarchicalearning.TreeClass as tc
 
 ########################################################################################################################
