@@ -1,10 +1,18 @@
+########################################################################################################################
+#                                                      Tree Class                                                      #
+#                                                                                                                      #
+# This file implements the Node, TreeInitialization, and Tree classes.                                                 #                            
+# Node                  - class defining the individual elements composing the Tree                                    #
+# TreeInitialization    - class encapsulating the methods related to the initialization of the main Tree attributes,   #
+#                         i.e., summation matrix, k-level-map, nodes.                                                  #
+# Tree                  - class inheriting the TreeInitialization class methods, and encapsulating hierarchical time   #
+#                         series related methods, i.e., hierarchy creation, data manipulations from tree (dictionary)  #
+#                         to flat (vector) format.                                                                     #
+########################################################################################################################
 import numpy as np
 import pandas as pd
 import hierarchicalearning.utils as utils
 
-########################################################################################################################
-###  Node & Tree Class
-########################################################################################################################
 
 class Node(object):
     """A Node class object to encapsulate node related attributes."""
@@ -619,70 +627,6 @@ class Multi_Tree(Tree):
 
         y_ID = [(spatial_id, temporal_id) for spatial_id in self.spatial.y_ID for temporal_id in self.temporal.y_ID]
         return S, y_ID
-
-    # def create_ST_hierarchy(self, df_leaves_spatial: dict, columns2aggr: list = None):
-    #     """Creates dictionary storing hierarchical dataframes per node_ID (key).
-    #     Upper level nodes are the result of lower leaves aggregation.
-    #
-    #     leaves_dict_df - dict - dictionary of input dataframes with leaves IDs as dictionary keys.
-    #     columns2aggr   - list - default value, i.e., None, aggregates all columns of the input dataframe. Only considers
-    #                              the input list otherwise."""
-    #
-    #     df = {}
-    #     columns2aggr = df_leaves_spatial[list(df_leaves_spatial.keys())[0]].columns if columns2aggr is None else columns2aggr
-    #     max_temporal_shift = np.max([int(id[1].split('_')[1]) for id in self.leaves_label])
-    #
-    #     self.hcolumns = columns2aggr
-    #     self.lcolumns = df_leaves_spatial[list(df_leaves_spatial.keys())[0]].columns
-    #
-    #     ## Creating tree leaves elements first
-    #     for id in self.leaves_label:
-    #         # Obtaining temporal information
-    #         id_temporal = id[1]
-    #         resampling_rate = id_temporal.split('_')[0]
-    #         temporal_shift = int(id_temporal.split('_')[1])
-    #         # Obtaining spatial information
-    #         id_spatial = id[0]
-    #         # Creating dataframe dictionary of leaves
-    #         df[id] = df_leaves_spatial[id_spatial].resample(resampling_rate).mean()
-    #         df[id] = df[id].drop(df[id].tail(max_temporal_shift - temporal_shift).index) \
-    #             .drop(df[id].head(temporal_shift).index)
-    #         # Selection only rows every 'delta' - where delta is here equal to the length of the temporal tree leaves
-    #         delta = len(self.temporal.leaves)
-    #         df[id] = df[id].loc[::delta, :]
-    #
-    #     ## Creating tree nodes from leaves aggregation
-    #     resampling_rate_leaves = self.leaves_label[0][1].split('_')[0]
-    #     for i, id in enumerate(self.y_ID):
-    #         # Aggregate only tree nodes
-    #         if id not in self.leaves_label:
-    #             # Obtaining temporal information
-    #             id_temporal = id[1]
-    #             resampling_rate = id_temporal.split('_')[0]
-    #             # Extracting leaves to aggregate from Summation matrix
-    #             i_leaves = list(self.S[i, :])
-    #             id_leaves_all = [id_l for i, id_l in zip(i_leaves, self.leaves_label) if i == 1]
-    #             # Creating dictionary of nodes from leaves aggregation
-    #             simple_index = df[id_leaves_all[0]].resample(resampling_rate_leaves).sum().index
-    #             df_aggr = pd.DataFrame(0, index=simple_index, columns=columns2aggr)
-    #             # First aggregate the leaves of similar sampling time
-    #             for id_l in id_leaves_all:
-    #                 if len(columns2aggr) > 1:
-    #                     for col in columns2aggr:
-    #                         df_aggr[col] = pd.DataFrame(pd.concat([df_aggr[col], df[id_l][col]], axis=1)
-    #                                                     .fillna(0).sum(axis=1), columns=[col])
-    #                 else:
-    #                     df_aggr = pd.DataFrame(pd.concat([df_aggr[columns2aggr], df[id_l][columns2aggr]], axis=1)
-    #                                            .fillna(0).sum(axis=1), columns=columns2aggr)
-    #             # Then resample the aggregated frame to the corresponding resampling rate and shift if necessary
-    #             df_aggr = df_aggr.resample(resampling_rate).sum()
-    #             # Selection only rows every 'delta' - where delta is here equal to the length of the aggregation level
-    #             delta = [len(k_lvl_items) for k, k_lvl_items in self.temporal.k_level_map.items()
-    #                      if id[1] in k_lvl_items][0]
-    #             df_aggr = df_aggr.loc[::delta, :]
-    #             df[id] = df_aggr
-    #     self.index = df[self.root.id].index
-    #     self.df = df
 
     def create_ST_hierarchy(self, df_leaves_spatial: dict, columns2aggr: list = None):
         """Creates dictionary storing hierarchical dataframes per node_ID (key).

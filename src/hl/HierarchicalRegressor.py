@@ -1,3 +1,12 @@
+########################################################################################################################
+#                                               Hierarchical Regressor                                                 #
+#                                                                                                                      #
+#  This file implements the hierarchical regressor class along with some pre-mining related functions. The class takes #
+# as input a Tree object defined in the TreeClass.py file. The hierarchical regressor is mainly responsible for feature#
+# engineering, data partitioning, covariance matrix calculations, regressor definition, and result saving.             #
+# The Base regressor is implemented at the very end of the file.                                                       #
+########################################################################################################################
+
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -379,21 +388,21 @@ class H_Regressor():
         accuracy_loss_mse = K.mean(K.square(y_true - y_hat), axis=-1)
         return accuracy_loss_mse
 
-    # def coherency_loss_function_ms3e(self, y_true, y_hat):
-    #     # Accuracy loss - mean structurally scaled squared Error (MS3E)
-    #     accuracy_loss_ms3e = K.mean(K.square((y_true - y_hat)/self.tree.k_level_y[None, :]), axis=-1)
-    #     # Coherency loss - str-MSE
-    #     SGyhat = K.dot(self.SG_K, K.transpose(y_hat))
-    #     coherency_loss = K.transpose(y_hat) - SGyhat
-    #     coherency_loss_ms3e = K.mean(K.square(coherency_loss/self.tree.k_level_y[:, None]), axis=0)
-    #     # Sum of both loss functions
-    #     loss = accuracy_loss_ms3e*self.alpha + K.transpose(coherency_loss_ms3e)*(1-self.alpha)
-    #     return loss
-    #
-    # def independent_loss_function_ms3e(self, y_true, y_hat):
-    #     # Accuracy loss - Mean Squared scaled squared Error (MS3E)
-    #     accuracy_loss_ms3e = K.mean(K.square((y_true - y_hat)/self.tree.k_level_y[None, :]), axis=-1)
-    #     return accuracy_loss_ms3e
+    def coherency_loss_function_ms3e(self, y_true, y_hat):
+        # Accuracy loss - mean structurally scaled squared Error (MS3E)
+        accuracy_loss_ms3e = K.mean(K.square((y_true - y_hat)/self.tree.k_level_y[None, :]), axis=-1)
+        # Coherency loss - str-MSE
+        SGyhat = K.dot(self.SG_K, K.transpose(y_hat))
+        coherency_loss = K.transpose(y_hat) - SGyhat
+        coherency_loss_ms3e = K.mean(K.square(coherency_loss/self.tree.k_level_y[:, None]), axis=0)
+        # Sum of both loss functions
+        loss = accuracy_loss_ms3e*self.alpha + K.transpose(coherency_loss_ms3e)*(1-self.alpha)
+        return loss
+    
+    def independent_loss_function_ms3e(self, y_true, y_hat):
+        # Accuracy loss - Mean Squared scaled squared Error (MS3E)
+        accuracy_loss_ms3e = K.mean(K.square((y_true - y_hat)/self.tree.k_level_y[None, :]), axis=-1)
+        return accuracy_loss_ms3e
 
     def create_ANN_network(self, number_of_layer=3):
         # kernel_initializerialising the ANN
@@ -814,8 +823,6 @@ class H_Regressor():
                                         custom_objects={'loss': self.independent_loss_function_mse})
         # Placing the loaded model as the attribute of the class_object
         class_object.regressor = keras_model
-        # # redefining the class (?)
-        # self = class_object
         return class_object
 
     def save_performance_metrics(self, filename: str, y_true: np.array, y_hat: np.array, comput_time, iteration,
@@ -829,19 +836,6 @@ class H_Regressor():
             filehandler = open(filename, 'rb')
             dic_df_res = pickle.load(filehandler)
             filehandler.close()
-
-            # # TODO - to remove later
-            # results_f_r_cols = [str(i) + '_' + str(j) for i in self.hierarchical_forecasting_methods for j in
-            #                     self.hierarchical_reconciliation_methods]
-            # pernode_perf_metrics = ['successful_forecast', 'y_hat_std', 'y_hat_mean', 'accuracy MSE', 'accuracy MS3E']
-            # flag = True
-            # if all(x in pernode_perf_metrics for x in dic_df_res.keys()):
-            #     flag = False
-            # if flag:
-            #     for key in pernode_perf_metrics:
-            #         dic_df_res[key] = dict()
-            #         for col in results_f_r_cols:
-            #             dic_df_res[key][col] = pd.DataFrame()
 
         else:
             # Initialization of columns to save
@@ -931,27 +925,6 @@ class Base_Regressor(H_Regressor):
         ANNRegressor.add(Dense(units=1,
                                kernel_initializer='lecun_uniform',
                                activation='linear'))
-        # # Adding the input layer and the first hidden layer
-        # ANNRegressor.add(Dense(units=len(self.features[n]),
-        #                        kernel_initializer='lecun_uniform',
-        #                        activation='linear',
-        #                        input_dim=self.input_length))
-        # # Adding the second hidden layer
-        # ANNRegressor.add(Dense(units=4,
-        #                        kernel_initializer='lecun_uniform',
-        #                        activation='relu'))
-        # ## Adding the third hidden layer
-        # ANNRegressor.add(Dense(units=2,
-        #                        kernel_initializer='lecun_uniform',
-        #                        activation='sigmoid'))
-        # ## Adding the fourth hidden layer
-        # ANNRegressor.add(Dense(units=3,
-        #                        kernel_initializer='lecun_uniform',
-        #                        activation='sigmoid'))
-        # ## Adding the fifth hidden layer
-        # ANNRegressor.add(Dense(units=2,
-        #                        kernel_initializer='lecun_uniform',
-        #                        activation='linear'))
         # Compiling the neural network
         ANNRegressor.compile(loss='MSE',
                              optimizer='Adam',

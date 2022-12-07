@@ -250,7 +250,6 @@ def get_pac_largest_timedeltas(df_in,
 ###  Clustering
 ########################################################################################################################
 
-
 def find_leaves_from_Z(cluster_idx, Z, leaves=[]):
     n_samples = np.shape(Z)[0] + 1
     children_tomerge = Z[cluster_idx][0:2]
@@ -335,7 +334,6 @@ def cluster_Smatrix_from_threshold(Z: np.array, S: np.array, y_ID: list, thresho
 ###  Visualization
 ########################################################################################################################
 hfont = {'fontname': 'Times New Roman'}
-
 
 # source: https://matplotlib.org/stable/gallery/images_contours_and_fields/image_annotated_heatmap.html
 def heatmap(data, row_labels, col_labels, ax=None,
