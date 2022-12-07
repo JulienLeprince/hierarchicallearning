@@ -2,7 +2,7 @@
 
 # Hierarchical Learning
 
-This repository presents Hierarchical Learning, a package for hierarchical forecasting of time series developed in the open-access journal article [Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads](https://doi.org/10.1016/j.enbuild.2022.112095). The repository reports both the python implementations of the article using the open daat set of the [building-data-genome-project-2](https://github.com/buds-lab/building-data-genome-project-2) as well as smaller tutorial jupiter notebooks to illustrate usage of the developed classes.
+This repository presents Hierarchical Learning, a package for hierarchical forecasting of time series developed in the open-access journal article [Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads](https://doi.org/10.1016/j.enbuild.2022.112095). The repository reports both the python implementations of the article using the open data set of the [building-data-genome-project-2](https://github.com/buds-lab/building-data-genome-project-2) as well as smaller tutorial jupiter notebooks to illustrate usage of the developed classes.
 
 To get started, simply clone this repository on your computer or Fork it via GitHub. After installing dependencies from  the `requirements.txt` file, the code should run properly.
 
@@ -18,7 +18,7 @@ If you find this code useful and use it in your work, please reference our journ
 ## Repository structure
 ```
 hierarchical learning
-├─ fig                                              <- figures outputs
+├─ fig                                              <- repository readme figures
 ├─ io
 |   ├─ input                                        <- input data-set of the Fox site
 |   └─ output
@@ -43,7 +43,7 @@ hierarchical learning
 
 [Julien Leprince](https://github.com/JulienLeprince),
 Prof. [Henrik Madsen](https://henrikmadsen.org/),
-Dr. [Jan Kloppenborg Møller](https://orbit.dtu.dk/en/persons/jan-kloppenborg-m%C3%B8ller),
+Ass. Prof. [Jan Kloppenborg Møller](https://orbit.dtu.dk/en/persons/jan-kloppenborg-m%C3%B8ller),
 Prof. [Wim Zeiler](https://www.tue.nl/en/research/researchers/wim-zeiler/).
 
 
