@@ -202,67 +202,58 @@ for site in sites_2_compute:
 
         ## Train the DANN
         for i in range(nb_splits):
-
             print(hierarchical_forecasting_method, i)
             # start the computing time tracking
             time_start = time.perf_counter()
             # For the first round, we initialise the G matrix as an OLS method - since we do not have prediction error
             # estimates yet
             hreg.scaler_attribute_update(divider=np.transpose(hreg.target_scalers['divider'][i]),
-                                         shift=np.transpose(hreg.target_scalers['shift'][i]))
+                                        shift=np.transpose(hreg.target_scalers['shift'][i]))
             if i == 0:
-                y_diff_ini = None
-                hreg.coherency_constraint(y_diff=y_diff_ini)
+                hreg.coherency_constraint(y_diff=None)
                 hreg.yhat_initialization(columns_in=target)
             # We train the DANN
             hreg.regressor.fit(X_train[i],
-                               y_train[i],
-                               epochs=400,
-                               batch_size=24,
-                               verbose=0,
-                               shuffle=False)
+                            y_train[i],
+                            epochs=500,
+                            batch_size=24,
+                            verbose=0,
+                            shuffle=False)
 
             # We obtain the y_hat prediction over the test set
             y_hat = hreg.regressor.predict(X_test[i])
             # Save y_hat to a hierarchical df format
             y_hat_unscaled = hreg.inverse_scale_y(y_hat)
+            y_diff = np.transpose(y_test_unscaled) - np.transpose(y_hat_unscaled)
             hreg.yhat = hreg.tree.reshape_flat2tree(flat_all_inputs=y_test_allflats[i], flat_data_in=y_hat_unscaled,
                                                     tree_df_in=hreg.yhat)
 
+            # finish the computing time tracking
+            time_elapsed_forecast = (time.perf_counter() - time_start)
+
+            # A-posteriori hard-constrained reconciliation
+            for reconciliation_method in hreg.hierarchical_reconciliation_methods:
+                time_start = time.perf_counter()
+                y_tild = hreg.hard_ctr_reconciliation(y_diff=y_diff, y_hat=y_hat_unscaled,
+                                                    method=reconciliation_method)
+                time_elapsed_forecast_reconciliation = time_elapsed_forecast + (time.perf_counter() - time_start)
+
+                # Saving the results
+                hreg.save_performance_metrics(path_out + 'BDG2_' + hreg.tree.dimension + '_' + site + extension + '_results.txt',
+                                            y_true=y_test_unscaled, y_hat=y_tild,
+                                            comput_time=time_elapsed_forecast_reconciliation, iteration=i,
+                                            reconciliation_method=reconciliation_method)
+                print(hierarchical_forecasting_method, i, reconciliation_method)
+            
             ## Update the coherency constraint in the loss function
-            y_diff = np.transpose(y_test[i]) - np.transpose(y_hat)
             hreg.coherency_constraint(y_diff=y_diff)
             # We recompile the regressor to update the new loss function
             # see - https://stackoverflow.com/questions/60996892/how-to-replace-loss-function-during-training-tensorflow-keras
             loss_fct = hreg.coherency_loss_function_mse if hreg.hierarchical_forecasting_method != 'multitask' \
                 else hreg.independent_loss_function_mse
             hreg.regressor.compile(loss=loss_fct,
-                                   optimizer='Adam',
-                                   metrics=['mae', 'mse'])
-
-            # finish the computing time tracking
-            time_elapsed_forecast = (time.perf_counter() - time_start)
-
-            # Inverse scaling y vectors for reconciliation
-            y_test_unscaled = hreg.inverse_scale_y(y_test[i])
-            y_hatrain = hreg.regressor.predict(X_train[i])
-            y_hatrain_unscaled = hreg.inverse_scale_y(y_hatrain)
-            y_train_unscaled = hreg.inverse_scale_y(y_train[i])
-            y_diff = np.transpose(y_train_unscaled) - np.transpose(y_hatrain_unscaled)
-
-            # A-posteriori hard-constrained reconciliation
-            for reconciliation_method in hreg.hierarchical_reconciliation_methods:
-                time_start = time.perf_counter()
-                y_tild = hreg.hard_ctr_reconciliation(y_diff=y_diff, y_hat=y_hat_unscaled,
-                                                      method=reconciliation_method)
-                time_elapsed_forecast_reconciliation = time_elapsed_forecast + (time.perf_counter() - time_start)
-
-                # Saving the results
-                hreg.save_performance_metrics(path_out + 'BDG2_' + hreg.tree.dimension + '_' + site + '_results'+extension+'.txt',
-                                              y_true=y_test_unscaled, y_hat=y_tild,
-                                              comput_time=time_elapsed_forecast_reconciliation, iteration=i,
-                                              reconciliation_method=reconciliation_method)
-                print(hierarchical_forecasting_method, i, reconciliation_method)
+                                    optimizer='Adam',
+                                    metrics=['mae', 'mse'])
 
 
     ########################################################################################################################

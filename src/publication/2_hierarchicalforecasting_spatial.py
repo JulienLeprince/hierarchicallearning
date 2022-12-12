@@ -228,29 +228,12 @@ for hierarchical_forecasting_method in hierarchical_forecasting_methods:
         y_hat = hreg.regressor.predict(X_test[i])
         # Save y_hat to a hierarchical df format
         y_hat_unscaled = hreg.inverse_scale_y(y_hat)
+        y_diff = np.transpose(y_test_unscaled) - np.transpose(y_hat_unscaled)
         hreg.yhat = hreg.tree.reshape_flat2tree(flat_all_inputs=y_test_allflats[i], flat_data_in=y_hat_unscaled,
                                                 tree_df_in=hreg.yhat)
 
-        ## Update the coherency constraint in the loss function
-        y_diff = np.transpose(y_test[i]) - np.transpose(y_hat)
-        hreg.coherency_constraint(y_diff=y_diff)
-        # We recompile the regressor to update the new loss function
-        # see - https://stackoverflow.com/questions/60996892/how-to-replace-loss-function-during-training-tensorflow-keras
-        loss_fct = hreg.coherency_loss_function_mse if hreg.hierarchical_forecasting_method != 'multitask' \
-            else hreg.independent_loss_function_mse
-        hreg.regressor.compile(loss=loss_fct,
-                               optimizer='Adam',
-                               metrics=['mae', 'mse'])
-
         # finish the computing time tracking
         time_elapsed_forecast = (time.perf_counter() - time_start)
-
-        # Inverse scaling y vectors for reconciliation
-        y_test_unscaled = hreg.inverse_scale_y(y_test[i])
-        y_hatrain = hreg.regressor.predict(X_train[i])
-        y_hatrain_unscaled = hreg.inverse_scale_y(y_hatrain)
-        y_train_unscaled = hreg.inverse_scale_y(y_train[i])
-        y_diff = np.transpose(y_train_unscaled) - np.transpose(y_hatrain_unscaled)
 
         # A-posteriori hard-constrained reconciliation
         for reconciliation_method in hreg.hierarchical_reconciliation_methods:
@@ -265,6 +248,16 @@ for hierarchical_forecasting_method in hierarchical_forecasting_methods:
                                           comput_time=time_elapsed_forecast_reconciliation, iteration=i,
                                           reconciliation_method=reconciliation_method)
             print(hierarchical_forecasting_method, i, reconciliation_method)
+        
+        ## Update the coherency constraint in the loss function
+        hreg.coherency_constraint(y_diff=y_diff)
+        # We recompile the regressor to update the new loss function
+        # see - https://stackoverflow.com/questions/60996892/how-to-replace-loss-function-during-training-tensorflow-keras
+        loss_fct = hreg.coherency_loss_function_mse if hreg.hierarchical_forecasting_method != 'multitask' \
+            else hreg.independent_loss_function_mse
+        hreg.regressor.compile(loss=loss_fct,
+                               optimizer='Adam',
+                               metrics=['mae', 'mse'])
 
 
 ########################################################################################################################

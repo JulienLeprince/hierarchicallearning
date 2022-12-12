@@ -118,22 +118,7 @@ tree_S = treepkg.Tree((S, y_ID), dimension='spatial')
 # Creating data hierarchy
 tree_S.create_spatial_hierarchy(df_tree, columns2aggr=['elec'])
 
-### Creating temporal tree
-tree_input_structure = {1: '1D', 2: '6H', 3: '3H', 4: '1H'}
-#tree_input_structure = {1: '12H', 2: '4H', 3: '2H'}
-tree_T = treepkg.Tree(tree_input_structure, dimension='temporal')
-# # Creating data hierarchy
-tree_T.create_temporal_hierarchy(df_tree[list(df_tree.keys())[0]], columns2aggr=['elec'])
-
-# for i_temp in range(8, len(df_tree.keys())):
-#     site = list(df_tree.keys())[i_temp]
-# site = list(df_tree.keys())[0]
-
-### Creating Spatio-Temporal tree
-tree_ST = treepkg.Multi_Tree(tree_S, tree_T)
-tree_ST.create_ST_hierarchy(df_tree, columns2aggr=['elec'])
-
-tree_H = tree_ST
+tree_H = tree_S
 
 ########################################################################################################################
 print(" \n Feature Selection")
