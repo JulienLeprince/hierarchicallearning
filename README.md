@@ -25,13 +25,14 @@ hierarchical learning
 |       ├─ regressor                                <- fitted hierarchical models and saved performances
 |       └─ visuals                                  <- plots of model performances
 ├─ src
-|   ├─ hpl                                          <- hierarchical learning package
+|   ├─ hl                                           <- hierarchical learning package
 |   ├─ publication
 |   |   ├─ 0 preprocessing                          <- BDG2 data preprocessing
 |   |   ├─ 1 cluster2tree                           <- reducing spatial hierarchical dimension with clustering
 |   |   ├─ 2 hierarchical forecasting <dimension>   <- hierarchical learning and reconciliation
 |   |   ├─ 3 base forecasting <dimension>           <- base forecast and reconciliation
-|   |   └─ 4 results visualization                  <- forecast performance visualizations
+|   |   ├─ 4 results processing                     <- forecast performance result processing
+|   |   └─ 5 results visualization                  <- forecast performance visualizations
 |   └─ tutorial
 |       ├─ 0 manipulating trees                     <- tree class initialization exemplified on all dimensions
 |       └─ 1 forecasting trees                      <- tree regressor initialization and training
