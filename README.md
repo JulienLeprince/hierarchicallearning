@@ -23,7 +23,8 @@ hierarchical learning
 |   ├─ input                                        <- input data-set of the Fox site
 |   └─ output
 |       ├─ regressor                                <- fitted hierarchical models and saved performances
-|       └─ visuals                                  <- plots of model performances
+|       ├─ results                                  <- processed results for forecast performance plots
+|       └─ visuals                                  <- forecast performance plots
 ├─ src
 |   ├─ hl                                           <- hierarchical learning package
 |   ├─ publication
