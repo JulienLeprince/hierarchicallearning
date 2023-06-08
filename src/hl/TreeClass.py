@@ -11,7 +11,7 @@
 ########################################################################################################################
 import numpy as np
 import pandas as pd
-import hierarchicalearning.utils as utils
+import hl.utils as utils
 
 
 class Node(object):

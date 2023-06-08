@@ -30,8 +30,8 @@ import pickle
 from keras.models import clone_model
 from os.path import exists
 
-import hierarchicalearning.utils as utils
-import hierarchicalearning.TreeClass as tc
+import hl.utils as utils
+import hl.TreeClass as tc
 
 ########################################################################################################################
 ### PreMining utilities
