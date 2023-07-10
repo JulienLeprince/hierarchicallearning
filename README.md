@@ -2,17 +2,27 @@
 
 # Hierarchical Learning
 
-This repository presents Hierarchical Learning, a package for hierarchical forecasting of time series developed in the open-access journal article [Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads](https://doi.org/10.1016/j.enbuild.2022.112095). The repository reports both the python implementations of the article using the open data set of the [building-data-genome-project-2](https://github.com/buds-lab/building-data-genome-project-2) as well as smaller tutorial jupiter notebooks to illustrate usage of the developed classes.
+This repository presents Hierarchical Learning, a package for hierarchical forecasting of time series developed in the open-access journal article [Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads](https://doi.org/10.1016/j.apenergy.2023.121510). The repository reports both the python implementations of the article using the open data set of the [building-data-genome-project-2](https://github.com/buds-lab/building-data-genome-project-2) as well as smaller tutorial jupiter notebooks to illustrate usage of the developed classes.
 
 To get started, simply clone this repository on your computer or Fork it via GitHub. After installing dependencies from  the `requirements.txt` file, the code should run properly.
 
 ### Citation
 If you find this code useful and use it in your work, please reference our journal article:
 
-[Leprince, J., Madsen, H., Kloppenborg Møller, J. and Zeiler, W., 2023. Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads. Applied Energy, p.112095.](https://doi.org/10.1016/j.enbuild.2022.112095)
+[Leprince, J., Madsen, H., Kloppenborg Møller, J. and Zeiler, W., 2023. Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads. Applied Energy, p.112095.](https://doi.org/10.1016/j.apenergy.2023.121510)
 
 ```
-
+@article{LEPRINCE2023121510,
+title = {Hierarchical learning, forecasting coherent spatio-temporal individual and aggregated building loads},
+journal = {Applied Energy},
+volume = {348},
+pages = {121510},
+year = {2023},
+issn = {0306-2619},
+doi = {https://doi.org/10.1016/j.apenergy.2023.121510},
+url = {https://www.sciencedirect.com/science/article/pii/S0306261923008747},
+author = {Julien Leprince and Henrik Madsen and Jan Kloppenborg MÃ¸ller and Wim Zeiler},
+}
 ```
 
 ## Repository structure
